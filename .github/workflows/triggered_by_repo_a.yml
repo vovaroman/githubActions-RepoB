@@ -32,7 +32,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           #artifact-ids: 3809340209  # Name of the artifact to download
-          repository: rzfeeser/RepoA # Owner and name of the source repository
+          repository: vovaroman/githubActions-RepoA # Owner and name of the source repository
           github-token: ${{ secrets.GITHUB_TOKEN }} # Your PAT secret
           run-id: ${{ github.event.inputs.artifact-run-id }}
 
