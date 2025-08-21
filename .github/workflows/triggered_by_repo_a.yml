@@ -1,0 +1,40 @@
+# Author RZFeeser@alta3.com
+# .github/workflows/triggered_by_repo_a.yml in Repository B
+name: RepoB Triggered by RepoA
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact-run-id:
+        description: 'What is the RUN ID to pull the artifact from?'
+        required: true
+        type: string
+  #repository_dispatch:
+  #  types: [build_triggered_by_repo_a]
+
+jobs:
+  triggered_by_repo_a:
+    runs-on: ubuntu-latest
+    # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Process payload
+        run: |
+          echo "Build triggered by: ${{ github.event.client_payload.source_repo }}"
+
+      - name: Download Artifact from Another Repository
+        uses: actions/download-artifact@v4
+        with:
+          #artifact-ids: 3809340209  # Name of the artifact to download
+          repository: rzfeeser/RepoA # Owner and name of the source repository
+          github-token: ${{ secrets.GITHUB_TOKEN }} # Your PAT secret
+          run-id: ${{ github.event.inputs.artifact-run-id }}
+
+      - name: Show the artifact we just downloaded
+        run: cat my-generated-artifact/generated-file.txt
